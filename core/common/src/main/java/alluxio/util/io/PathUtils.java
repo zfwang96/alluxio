@@ -76,14 +76,14 @@ public final class PathUtils {
     Preconditions.checkArgument(paths != null, "Failed to concatPath: a null set of paths");
     List<String> trimmedPathList = new ArrayList<>();
     String trimmedBase =
-        CharMatcher.is(AlluxioURI.SEPARATOR.charAt(0)).trimTrailingFrom(base.toString());
+        CharMatcher.is(AlluxioURI.SEPARATOR.charAt(0)).trimTrailingFrom(base.toString().trim());
     trimmedPathList.add(trimmedBase);
     for (Object path : paths) {
       if (path == null) {
         continue;
       }
       String trimmedPath =
-          CharMatcher.is(AlluxioURI.SEPARATOR.charAt(0)).trimFrom(path.toString());
+          CharMatcher.is(AlluxioURI.SEPARATOR.charAt(0)).trimFrom(path.toString().trim());
       if (!trimmedPath.isEmpty()) {
         trimmedPathList.add(trimmedPath);
       }

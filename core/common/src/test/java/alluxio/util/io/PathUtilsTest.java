@@ -103,6 +103,11 @@ public final class PathUtilsTest {
     assertEquals("/foo/bar", PathUtils.concatPath("/foo/", "/bar"));
     assertEquals("/foo/bar", PathUtils.concatPath("/foo/", "/bar/"));
 
+    // Whitespace must be trimmed.
+    assertEquals("/foo/bar", PathUtils.concatPath("/foo ", "bar  "));
+    assertEquals("/foo/bar", PathUtils.concatPath("/foo ", "  bar"));
+    assertEquals("/foo/bar", PathUtils.concatPath("/foo ", "  bar  "));
+
     // Redundant separator must be trimmed.
     assertEquals("/foo/bar", PathUtils.concatPath("/foo/", "bar//"));
 
