@@ -14,7 +14,6 @@ package alluxio.master.journal;
 import com.google.common.base.Preconditions;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.concurrent.ThreadSafe;
 
@@ -25,8 +24,6 @@ import javax.annotation.concurrent.ThreadSafe;
 public abstract class AbstractJournalSystem implements JournalSystem {
   private Mode mMode = Mode.SECONDARY;
   private boolean mRunning = false;
-
-  public static final AtomicBoolean ALLOW_JOURNAL_MODIFY = new AtomicBoolean(true);
 
   @Override
   public synchronized void start() throws InterruptedException, IOException {

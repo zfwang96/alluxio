@@ -16,8 +16,6 @@ import alluxio.PropertyKey;
 import alluxio.RuntimeConstants;
 import alluxio.exception.ExceptionMessage;
 import alluxio.exception.InvalidJournalEntryException;
-import alluxio.exception.JournalClosedException;
-import alluxio.master.journal.AbstractJournalSystem;
 import alluxio.master.journal.JournalReader;
 import alluxio.master.journal.JournalWriter;
 import alluxio.proto.journal.Journal.JournalEntry;
@@ -137,9 +135,7 @@ final class UfsJournalLogWriter implements JournalWriter {
         return;
       }
 
-      if (AbstractJournalSystem.ALLOW_JOURNAL_MODIFY.get()) {
-        completeLog(mCurrentLog, mNextSequenceNumber);
-      }
+      completeLog(mCurrentLog, mNextSequenceNumber);
     }
   }
 
@@ -164,12 +160,9 @@ final class UfsJournalLogWriter implements JournalWriter {
     mEntriesToFlush = new ArrayDeque<>();
   }
 
-  public synchronized void write(JournalEntry entry) throws IOException, JournalClosedException {
+  public synchronized void write(JournalEntry entry) throws IOException {
     if (mClosed) {
       throw new IOException(ExceptionMessage.JOURNAL_WRITE_AFTER_CLOSE.getMessage());
-    }
-    if (!AbstractJournalSystem.ALLOW_JOURNAL_MODIFY.get()) {
-      throw new JournalClosedException("Master lost leadership. Cannot write to journal");
     }
     maybeRecoverFromUfsFailures();
     maybeRotateLog();
@@ -368,10 +361,7 @@ final class UfsJournalLogWriter implements JournalWriter {
     }
   }
 
-  public synchronized void flush() throws IOException, JournalClosedException {
-    if (!AbstractJournalSystem.ALLOW_JOURNAL_MODIFY.get()) {
-      throw new JournalClosedException("Master lost leadership. Cannot write to journal");
-    }
+  public synchronized void flush() throws IOException {
     maybeRecoverFromUfsFailures();
 
     if (mClosed || mJournalOutputStream == null || mJournalOutputStream.bytesWritten() == 0) {
